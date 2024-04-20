@@ -1,0 +1,209 @@
+rem タイトル画面
+background 5
+locate 3,3
+print "夜ふかししたい！"
+locate 0,5
+print "ルール"
+print "・矢印キーでねむらせオバケから逃げよう"
+print "　あたると眠っちゃうよ"
+print "・お母さんに見つかると怒られて眠っちゃうよ"
+print "・お肉をキャッチして元気チャージ！"
+print " ポイントがたまって起きられる時間"
+print " （元気値）が長くなるよ"
+print "・元気値が0:00になると"
+print " 眠っちゃうよ！"
+print "・お肉をキャッチしてできるだけ"
+print " 長く起きれるようにしよう"
+locate 5,22
+print "スペースキーでゲームスタート！！"
+pause 100
+rem START
+do
+  a$=inkey$()
+  if a$=" " then
+    pause 300
+    exit do
+  end if
+loop
+
+
+
+rem main
+cls
+background 3
+x=100
+y=300
+score=0
+ti=100
+//間隔時間
+tt=100
+show 17,(100,100)
+move 17
+do
+  
+ 
+  //母親
+  //for s=1 to 2 step 1
+  s=17
+  if not moving(s) then
+    direction s,random(1,8)
+    speed s,random(10,20)
+    distance s,random(50,200)
+    move s
+  end if
+  //next
+  
+  //移動命令
+  do
+    k$=inkey$()
+    tap tx,ty
+    if k$="ArrowLeft" or (0<=tx and tx<=x) then
+      x=max(10,x-8)
+      //exit do
+      else if k$="ArrowRight" or x<=tx then
+      x=min(600,x+8)
+      // exit do
+      else if k$="ArrowUp" or y<=ty then
+      y=y-8
+      else if k$="ArrowDown" or y<=ty then
+      y=y+8
+      //exit do
+    else
+      exit do
+    end if
+  loop
+  show 0,(x,y)
+  move 0
+  //弾幕
+  //plus
+  for i=1 to 8
+    sprite i,0,74
+    direction i,5
+    speed i,random(10,20)
+    distance i,376
+  next
+
+  for i=1 to 8
+    if not moving(i) then
+      show i,(random(0,639),0)
+      move i
+    end if
+    if crash (0,i) then
+    
+      hide i
+    end if
+  next
+  //minus
+  if ti<110 then
+    m=12
+    for j=9 to m
+      sprite j,0,73
+      direction j,5
+      speed j,random(10,15)
+      distance j,376
+    next
+
+    for j=9 to m
+      if not moving(j) then
+        show j,(random(0,639),0)
+        move j
+      end if
+      if crash (0,j) then
+        hide j
+        cls
+        background 4
+        locate 15,11
+        print "あ、寝ちゃった！"
+        locate 14,13
+        print "あなたのscoreは"
+        locate 19,15
+        print score
+      
+        exit do
+      end if
+    next
+  
+    else if ti>110 then
+    m=16
+    for j=9 to m
+      sprite j,0,73
+      direction j,5
+      speed j,random(10,15)
+      distance j,376
+    next
+
+    for j=9 to m
+      if not moving(j) then
+        show j,(random(0,639),0)
+        move j
+      end if
+      if crash (0,j) then
+        hide j
+        cls
+        background 4
+        locate 15,11
+        print "あ、寝ちゃった！"
+        locate 14,13
+        print "あなたのscoreは"
+        locate 19,15
+        print score
+      
+        exit do
+      end if
+    next
+  end if
+
+  pause tt
+  //timer
+  locate 2,2
+  print "元気値="
+  locate 6,2
+  print ti/10
+   
+  
+  ti=ti-1
+  if ti<10 then
+    locate 8,1
+    print " "
+   
+  end if
+     
+  //print touch(0,7)
+  rem time plus
+
+
+  rem score計算
+  for i=1 to 8
+    if crash(0,i) then
+      score=score+1
+      ti=ti+40
+      //print touch(0,2)
+    end if
+  next
+  //終わりの条件
+  if ti<=0 then
+    cls
+    background 2
+    locate 15,11
+    print "おやすみなさい"
+    locate 14,13
+    print "あなたのscoreは"
+    locate 19,15
+    print score
+    exit do
+    else if crash (0,17) then
+    cls
+    background 4
+    locate 12,11
+    print "ヤバい！母さんに見つかった"
+    locate 14,13
+    print "あなたのscoreは"
+    locate 19,15
+    print score
+    exit do
+    
+    
+  end if
+
+
+loop
